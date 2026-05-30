@@ -4,7 +4,13 @@ import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 
 const initialState = {
-  foo: 'foo',
+  sessionSelection: {} as {
+    [key: `${string}:${string}`]: {
+      agent?: string
+      model?: string
+      variant?: string
+    }
+  },
 }
 
 export const useOpencodeStore = create<typeof initialState>()(

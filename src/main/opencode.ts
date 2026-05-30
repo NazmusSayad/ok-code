@@ -1,5 +1,5 @@
 export async function initOpencode(ipcMain: Electron.IpcMain) {
-  const { createOpencode } = await import('@opencode-ai/sdk')
+  const { createOpencode } = await import('@opencode-ai/sdk/v2')
 
   const { client } = await createOpencode()
 
@@ -17,9 +17,13 @@ export async function initOpencode(ipcMain: Electron.IpcMain) {
 
   ipcMain.handle(
     'opencode:getSessionMessages',
-    async (_, sessionId: string) => {
+    async (
+      _,
+      sessionID: string,
+      options: { limit?: number; before?: string }
+    ) => {
       return client.session
-        .messages({ path: { id: sessionId } })
+        .messages({ sessionID, ...options })
         .then((result) => result.data ?? [])
     }
   )
