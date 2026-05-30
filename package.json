@@ -6,6 +6,7 @@
   "author": "example.com",
   "homepage": "https://electron-vite.org",
   "scripts": {
+    "postinstall": "electron-builder install-app-deps",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "dev": "electron-vite dev",
@@ -14,7 +15,6 @@
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
-    "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
