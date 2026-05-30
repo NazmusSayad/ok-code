@@ -3,19 +3,18 @@ import { AppSidebar } from './components/app-sidebar'
 import { ProjectDetail } from './components/project-detail'
 import { SessionMessages } from './components/session-messages'
 
-function AppLayout() {
-  return (
-    <div className="grid size-full grid-cols-[240px_1fr]">
-      <AppSidebar />
-      <Outlet />
-    </div>
-  )
-}
-
 export function App() {
   return (
     <Routes>
-      <Route element={<AppLayout />}>
+      <Route
+        element={
+          <div className="grid size-full grid-cols-[240px_1fr] overflow-hidden">
+            <AppSidebar />
+
+            <Outlet />
+          </div>
+        }
+      >
         <Route
           index
           element={
@@ -25,6 +24,7 @@ export function App() {
           }
         />
         <Route path="project/:projectId" element={<ProjectDetail />} />
+
         <Route
           path="project/:projectId/session/:sessionId"
           element={<SessionMessages />}

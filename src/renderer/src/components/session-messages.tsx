@@ -72,7 +72,7 @@ export function SessionMessages() {
   }
 
   return (
-    <main className="flex h-full flex-col">
+    <main className="flex h-full flex-col overflow-auto">
       <div className="border-b px-6 py-4">
         <h1 className="flex items-center gap-2 text-lg font-bold">
           <MessageSquare className="size-5 text-muted-foreground" />
