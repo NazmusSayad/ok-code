@@ -8,7 +8,7 @@ export function App() {
     <Routes>
       <Route
         element={
-          <div className="grid size-full grid-cols-[240px_1fr] overflow-hidden">
+          <div className="bg-background grid size-full grid-cols-[240px_1fr] overflow-hidden">
             <AppSidebar />
 
             <Outlet />
@@ -18,7 +18,7 @@ export function App() {
         <Route
           index
           element={
-            <main className="text-muted-foreground flex flex-1 items-center justify-center text-sm">
+            <main className="text-muted-foreground flex flex-1 items-center justify-center px-4 text-center text-sm">
               Select a project from the sidebar
             </main>
           }

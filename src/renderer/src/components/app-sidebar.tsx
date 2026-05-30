@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   ChevronDown,
@@ -35,57 +36,53 @@ export function AppSidebar() {
     return map
   }, [sessionsData])
 
-  console.log(sessionsByProject)
-
   return (
-    <aside className="bg-muted/40 flex h-full flex-col overflow-hidden border-r">
+    <aside className="bg-sidebar flex h-full flex-col overflow-hidden border-r">
       <div className="flex flex-1 flex-col overflow-hidden">
-        <div className="flex items-center justify-between border-b px-3 py-2">
-          <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+        <div className="flex h-10 items-center justify-between border-b px-3">
+          <span className="text-muted-foreground text-[10px] font-medium tracking-[0.5px] uppercase">
             Projects
           </span>
-          <div className="flex items-center gap-0.5">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-6"
-              onClick={() => {
-                void queryClient.invalidateQueries({ queryKey: ['projects'] })
-              }}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <Loader className="size-3.5 animate-spin" />
-              ) : (
-                <RefreshCw className="size-3.5" />
-              )}
-            </Button>
-          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-muted-foreground hover:bg-accent/60 size-6"
+            onClick={() => {
+              void queryClient.invalidateQueries({ queryKey: ['projects'] })
+            }}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Loader className="size-3.5 animate-spin" />
+            ) : (
+              <RefreshCw className="size-3.5" />
+            )}
+          </Button>
         </div>
 
         {error && (
-          <div className="text-destructive p-3 text-xs">{error.message}</div>
+          <div className="text-destructive px-3 py-2 text-xs">
+            {error.message}
+          </div>
         )}
 
-        <div className="better-scrollbar flex-1 overflow-auto">
+        <div className="better-scrollbar flex-1 overflow-auto py-1">
           {(!projectsData || projectsData.length === 0) && !isLoading ? (
-            <div className="text-muted-foreground p-3 text-xs">
+            <div className="text-muted-foreground px-3 py-2 text-xs">
               No projects found
             </div>
           ) : (
-            <ul className="space-y-0.5 p-1">
+            <ul className="space-y-0.5 px-1.5">
               {(projectsData ?? [])
                 .filter((p) => !(p.id === 'global' || p.worktree === '/'))
                 .map((project) => {
                   const isActiveProject = activeProjectId === project.id
                   const projectSessions = sessionsByProject[project.id] || []
-                  const isExpanded = Boolean(isActiveProject)
+                  const isExpanded = isActiveProject
 
                   return (
                     <li key={project.id}>
-                      <Button
-                        variant={isActiveProject ? 'secondary' : 'ghost'}
-                        className="h-auto w-full justify-start gap-2 px-2 py-1.5 text-xs"
+                      <button
                         onClick={() => {
                           if (activeProjectId === project.id) {
                             void navigate('/')
@@ -93,46 +90,59 @@ export function AppSidebar() {
                             void navigate(`/project/${project.id}`)
                           }
                         }}
+                        className={cn(
+                          'hover:bg-accent/60 flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors',
+                          isActiveProject
+                            ? 'bg-accent text-accent-foreground font-medium'
+                            : 'text-foreground'
+                        )}
                       >
                         <Folder className="text-muted-foreground size-3.5 shrink-0" />
-                        <span className="truncate">{project.worktree}</span>
-                        {isExpanded && projectSessions.length > 0 && (
-                          <span className="text-muted-foreground ml-auto text-[10px]">
-                            {projectSessions.length}
-                          </span>
+                        <span className="flex-1 truncate text-[13px]">
+                          {project.worktree}
+                        </span>
+                        {projectSessions.length > 0 && (
+                          <>
+                            <span className="text-muted-foreground ml-auto text-[10px] tabular-nums">
+                              {projectSessions.length}
+                            </span>
+                            {isExpanded ? (
+                              <ChevronDown className="text-muted-foreground size-3 shrink-0" />
+                            ) : (
+                              <ChevronRight className="text-muted-foreground size-3 shrink-0" />
+                            )}
+                          </>
                         )}
-                        {projectSessions.length > 0 &&
-                          (isExpanded ? (
-                            <ChevronDown className="text-muted-foreground size-3 shrink-0" />
-                          ) : (
-                            <ChevronRight className="text-muted-foreground size-3 shrink-0" />
-                          ))}
-                      </Button>
+                      </button>
 
                       {isExpanded && projectSessions.length > 0 && (
-                        <ul className="ml-3 space-y-0.5 border-l pl-1">
-                          {projectSessions.map((session) => (
-                            <li key={session.id}>
-                              <Button
-                                variant={
-                                  activeSessionId === session.id
-                                    ? 'secondary'
-                                    : 'ghost'
-                                }
-                                className="h-auto w-full justify-start gap-2 px-2 py-1 text-xs"
-                                onClick={() =>
-                                  void navigate(
-                                    `/inbox/${project.id}/${session.id}`
-                                  )
-                                }
-                              >
-                                <MessageSquare className="text-muted-foreground size-3 shrink-0" />
-                                <span className="truncate">
-                                  {session.title || session.directory}
-                                </span>
-                              </Button>
-                            </li>
-                          ))}
+                        <ul className="mt-0.5 ml-4 space-y-0.5 border-l pl-2.5">
+                          {projectSessions.map((session) => {
+                            const isActiveSession =
+                              activeSessionId === session.id
+                            return (
+                              <li key={session.id}>
+                                <button
+                                  onClick={() =>
+                                    void navigate(
+                                      `/inbox/${project.id}/${session.id}`
+                                    )
+                                  }
+                                  className={cn(
+                                    'hover:bg-accent/60 flex w-full items-center gap-2 rounded-md px-2 py-1 text-left text-[12.5px] transition-colors',
+                                    isActiveSession
+                                      ? 'bg-accent/80 text-accent-foreground font-medium'
+                                      : 'text-muted-foreground hover:text-foreground'
+                                  )}
+                                >
+                                  <MessageSquare className="size-3 shrink-0 opacity-70" />
+                                  <span className="flex-1 truncate">
+                                    {session.title || session.directory}
+                                  </span>
+                                </button>
+                              </li>
+                            )
+                          })}
                         </ul>
                       )}
                     </li>

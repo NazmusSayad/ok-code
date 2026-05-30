@@ -39,17 +39,17 @@
   }
 
   .better-scrollbar::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 5px transparent;
+    -webkit-box-shadow: inset 0 0 6px transparent;
     @apply bg-transparent;
   }
 
   .better-scrollbar::-webkit-scrollbar {
-    width: 5px;
+    width: 6px;
     @apply bg-transparent;
   }
 
   .better-scrollbar::-webkit-scrollbar-thumb {
-    border-radius: 5px;
+    border-radius: 6px;
     @apply bg-border border-none;
   }
 }

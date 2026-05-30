@@ -1,7 +1,10 @@
 import {
-  NativeSelect,
-  NativeSelectOption,
-} from '../../../components/ui/native-select'
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../components/ui/select'
 import { useAgentsQuery, useModelsQuery } from '../../../hooks/queries'
 import {
   selectSessionAgent,
@@ -13,7 +16,6 @@ import {
 interface PromptControlsProps {
   projectId: string
   sessionId: string
-  disabled?: boolean
   activeModelKey: string | null
   onActiveModelKeyChange: (key: string | null) => void
 }
@@ -21,7 +23,6 @@ interface PromptControlsProps {
 export function PromptControls({
   projectId,
   sessionId,
-  disabled,
   activeModelKey,
   onActiveModelKeyChange,
 }: PromptControlsProps) {
@@ -32,43 +33,45 @@ export function PromptControls({
   const modelsMap = selection.models || {}
 
   return (
-    <div className="bg-muted/30 flex flex-wrap items-center gap-2 border-t px-3 py-2">
+    <div className="bg-muted/20 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t px-4 py-2">
       {/* Agent */}
-      <div className="flex items-center gap-1.5">
-        <span className="text-muted-foreground text-[10px] tracking-wider uppercase">
+      <div className="flex items-center gap-2">
+        <span className="text-muted-foreground w-10 shrink-0 text-[10px] font-medium tracking-wider uppercase">
           Agent
         </span>
-        <NativeSelect
-          value={selection.agent || ''}
-          onChange={(e) => {
-            selectSessionAgent(
-              projectId,
-              sessionId,
-              e.target.value || undefined
-            )
+        <Select
+          value={selection.agent || '__none__'}
+          onValueChange={(val) => {
+            const next = val === '__none__' ? undefined : val
+            selectSessionAgent(projectId, sessionId, next)
           }}
-          disabled={disabled || agents.length === 0}
-          className="h-8 min-w-[120px] text-xs"
+          disabled={agents.length === 0}
         >
-          <NativeSelectOption value="">—</NativeSelectOption>
-          {agents.map((a) => (
-            <NativeSelectOption key={a.name} value={a.name}>
-              {a.name}
-            </NativeSelectOption>
-          ))}
-        </NativeSelect>
+          <SelectTrigger size="sm" className="h-7 w-[130px] text-xs">
+            <SelectValue placeholder="—" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="__none__">—</SelectItem>
+            {agents
+              .filter((a) => a.mode === 'primary' && !a.hidden)
+              .map((a) => (
+                <SelectItem key={a.name} value={a.name}>
+                  {a.name}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Model */}
-      <div className="flex items-center gap-1.5">
-        <span className="text-muted-foreground text-[10px] tracking-wider uppercase">
+      <div className="flex items-center gap-2">
+        <span className="text-muted-foreground w-10 shrink-0 text-[10px] font-medium tracking-wider uppercase">
           Model
         </span>
-        <NativeSelect
-          value={activeModelKey || ''}
-          onChange={(e) => {
-            const val = e.target.value
-            if (val) {
+        <Select
+          value={activeModelKey || '__none__'}
+          onValueChange={(val) => {
+            if (val && val !== '__none__') {
               const [providerId, modelId] = val.split(':')
               selectSessionModel(projectId, sessionId, providerId, modelId)
               onActiveModelKeyChange(val)
@@ -76,24 +79,28 @@ export function PromptControls({
               onActiveModelKeyChange(null)
             }
           }}
-          disabled={disabled || models.length === 0}
-          className="h-8 min-w-[180px] text-xs"
+          disabled={models.length === 0}
         >
-          <NativeSelectOption value="">—</NativeSelectOption>
-          {models.map((m) => {
-            const val = `${m.providerID}:${m.id}`
-            return (
-              <NativeSelectOption key={val} value={val}>
-                {m.name}
-              </NativeSelectOption>
-            )
-          })}
-        </NativeSelect>
+          <SelectTrigger size="sm" className="h-7 w-[170px] text-xs">
+            <SelectValue placeholder="—" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="__none__">—</SelectItem>
+            {models.map((m) => {
+              const val = `${m.providerID}:${m.id}`
+              return (
+                <SelectItem key={val} value={val}>
+                  {m.name}
+                </SelectItem>
+              )
+            })}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Variant */}
-      <div className="flex items-center gap-1.5">
-        <span className="text-muted-foreground text-[10px] tracking-wider uppercase">
+      <div className="flex items-center gap-2">
+        <span className="text-muted-foreground w-10 shrink-0 text-[10px] font-medium tracking-wider uppercase">
           Variant
         </span>
         {(() => {
@@ -112,31 +119,35 @@ export function PromptControls({
           const currentVariantValue = currentEntry?.variant ?? ''
 
           return (
-            <NativeSelect
-              value={currentVariantValue}
-              onChange={(e) => {
+            <Select
+              value={currentVariantValue || '__none__'}
+              onValueChange={(val) => {
                 if (currentKey) {
                   const [providerId, modelId] = currentKey.split(':')
-                  const val = e.target.value || undefined
+                  const next = val === '__none__' ? undefined : val
                   setSessionModelVariant(
                     projectId,
                     sessionId,
                     providerId,
                     modelId,
-                    val
+                    next
                   )
                 }
               }}
-              disabled={disabled}
-              className="h-8 min-w-[110px] text-xs"
+              disabled={variantOptions.length === 0}
             >
-              <NativeSelectOption value="">—</NativeSelectOption>
-              {variantOptions.map((v) => (
-                <NativeSelectOption key={v} value={v}>
-                  {v}
-                </NativeSelectOption>
-              ))}
-            </NativeSelect>
+              <SelectTrigger size="sm" className="h-7 w-[110px] text-xs">
+                <SelectValue placeholder="—" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__none__">—</SelectItem>
+                {variantOptions.map((v) => (
+                  <SelectItem key={v} value={v}>
+                    {v}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           )
         })()}
       </div>

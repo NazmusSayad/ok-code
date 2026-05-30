@@ -118,7 +118,7 @@ export function SessionInbox() {
     }
   }
 
-  function handleKeyDown(e: React.KeyboardEvent<Element>) {
+  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSend()
@@ -128,13 +128,13 @@ export function SessionInbox() {
   return (
     <main className="grid h-full grid-rows-[1fr_auto] overflow-hidden">
       <div className="grid h-full grid-rows-[auto_1fr_auto] overflow-hidden">
-        <div className="border-b px-6 py-4">
-          <h1 className="flex items-center gap-2 text-lg font-bold">
-            <MessageSquare className="text-muted-foreground size-5" />
+        <div className="border-b px-5 py-3">
+          <h1 className="flex items-center gap-2 text-base font-semibold tracking-tight">
+            <MessageSquare className="text-muted-foreground size-4" />
             {session?.title || sessionId}
           </h1>
           {project && (
-            <p className="text-muted-foreground mt-1 text-xs">
+            <p className="text-muted-foreground mt-0.5 truncate text-xs">
               {project.worktree}
             </p>
           )}
@@ -142,7 +142,7 @@ export function SessionInbox() {
 
         <div
           ref={listRef}
-          className="better-scrollbar flex-1 overflow-auto p-6"
+          className="better-scrollbar flex-1 overflow-auto px-5 py-4"
         >
           <MessagesList
             messages={messages || []}
@@ -153,7 +153,7 @@ export function SessionInbox() {
         </div>
 
         {sendError && (
-          <div className="border-destructive/30 bg-destructive/10 text-destructive border-t px-6 py-2 text-xs">
+          <div className="border-destructive/30 bg-destructive/10 text-destructive border-t px-5 py-1.5 text-xs">
             {sendError}
           </div>
         )}
@@ -163,7 +163,6 @@ export function SessionInbox() {
         <PromptControls
           projectId={projectId!}
           sessionId={sessionId!}
-          disabled={isProcessing}
           activeModelKey={activeModelKey}
           onActiveModelKeyChange={setActiveModelKey}
         />

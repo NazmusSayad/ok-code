@@ -17,7 +17,7 @@ export function MessagesList({
 }: MessagesListProps) {
   if (isLoading) {
     return (
-      <div className="text-muted-foreground flex items-center justify-center gap-2 py-8 text-sm">
+      <div className="text-muted-foreground flex items-center justify-center gap-2 py-10 text-sm">
         <Loader2 className="size-4 animate-spin" />
         Loading messages...
       </div>
@@ -30,21 +30,21 @@ export function MessagesList({
 
   if (!messages || messages.length === 0) {
     return (
-      <p className="text-muted-foreground text-sm">
-        No messages in this session. Send one below.
+      <p className="text-muted-foreground py-8 text-center text-sm">
+        No messages yet. Send a prompt below to start.
       </p>
     )
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {messages.map((msg) => (
         <MessageItem key={msg.info.id} msg={msg} />
       ))}
       {isProcessing && (
-        <div className="bg-muted/30 text-muted-foreground flex items-center gap-2 rounded-lg border p-3 text-sm">
-          <Loader2 className="size-4 animate-spin" />
-          Processing...
+        <div className="text-muted-foreground bg-muted/40 flex items-center gap-2 rounded-lg border px-3 py-2 text-xs">
+          <Loader2 className="size-3.5 animate-spin" />
+          Processing…
         </div>
       )}
     </div>
