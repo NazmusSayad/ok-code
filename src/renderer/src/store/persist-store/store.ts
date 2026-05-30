@@ -5,6 +5,7 @@ import { immer } from 'zustand/middleware/immer'
 
 const initialState = {
   sessionSelection: {} as {
+    // `${projectId}:${sessionId}`
     [key: `${string}:${string}`]: {
       agent?: string
       model?: string
