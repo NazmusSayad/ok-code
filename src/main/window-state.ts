@@ -2,113 +2,77 @@ import { app, BrowserWindow, screen } from 'electron'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
 
-export interface WindowState {
+export type WindowState = {
   x?: number
   y?: number
   width: number
   height: number
+  monitor: number
   isMaximized: boolean
 }
 
 const STATE_FILE = 'window-state.json'
 
-function getStatePath(): string {
+function getStatePath() {
   return join(app.getPath('userData'), STATE_FILE)
 }
 
 export function loadWindowState(): WindowState | null {
   try {
-    const path = getStatePath()
-    if (!existsSync(path)) return null
-    return JSON.parse(readFileSync(path, 'utf-8'))
+    const p = getStatePath()
+    if (!existsSync(p)) return null
+    return JSON.parse(readFileSync(p, 'utf-8'))
   } catch {
     return null
   }
 }
 
-function saveWindowState(state: WindowState): void {
+function saveWindowState(state: WindowState) {
   try {
     writeFileSync(getStatePath(), JSON.stringify(state), 'utf-8')
-  } catch {
-    // Silently fail — state saving should never crash the app
-  }
-}
-
-function isVisibleOnAnyDisplay(state: WindowState): boolean {
-  if (state.x === undefined || state.y === undefined) return false
-  const cx = state.x + state.width / 2
-  const cy = state.y + state.height / 2
-  return screen.getAllDisplays().some((display) => {
-    const { x: dx, y: dy, width: dw, height: dh } = display.bounds
-    return cx >= dx && cx < dx + dw && cy >= dy && cy < dy + dh
-  })
-}
-
-function centerOnPrimary(state: WindowState): WindowState {
-  const {
-    x: px,
-    y: py,
-    width: pw,
-    height: ph,
-  } = screen.getPrimaryDisplay().workArea
-  return {
-    ...state,
-    x: Math.round(px + (pw - state.width) / 2),
-    y: Math.round(py + (ph - state.height) / 2),
-  }
-}
-
-export function validateWindowState(
-  state: WindowState | null
-): WindowState | null {
-  if (!state) return null
-  if (
-    state.x === undefined ||
-    state.y === undefined ||
-    !isVisibleOnAnyDisplay(state)
-  ) {
-    return centerOnPrimary(state)
-  }
-  return state
+  } catch {}
 }
 
 function getCurrentState(win: BrowserWindow): WindowState {
-  const isMaximized = win.isMaximized()
-  const isMinimized = win.isMinimized()
-  const bounds =
-    isMaximized || isMinimized ? win.getNormalBounds() : win.getBounds()
+  const isMax = win.isMaximized()
+  const isMin = win.isMinimized()
+  const bounds = isMax || isMin ? win.getNormalBounds() : win.getBounds()
+
+  const displays = screen.getAllDisplays()
+  const display = screen.getDisplayMatching(bounds)
+  const monitor = displays.findIndex((d) => d.id === display.id)
+
   return {
     x: bounds.x,
     y: bounds.y,
     width: bounds.width,
     height: bounds.height,
-    isMaximized,
+    monitor: monitor < 0 ? 0 : monitor,
+    isMaximized: isMax,
   }
 }
 
-export function registerWindowStateHandlers(win: BrowserWindow): void {
-  let saveTimer: ReturnType<typeof setTimeout> | null = null
+export function registerWindowStateHandlers(win: BrowserWindow) {
+  let timer: ReturnType<typeof setTimeout> | null = null
 
-  function debouncedSave(): void {
-    if (saveTimer !== null) clearTimeout(saveTimer)
-    saveTimer = setTimeout(() => {
-      if (!win.isDestroyed()) {
-        saveWindowState(getCurrentState(win))
-      }
-      saveTimer = null
+  function doSave() {
+    if (timer) clearTimeout(timer)
+    timer = setTimeout(() => {
+      if (!win.isDestroyed()) saveWindowState(getCurrentState(win))
+      timer = null
     }, 500)
   }
 
-  function saveImmediate(): void {
-    if (saveTimer !== null) {
-      clearTimeout(saveTimer)
-      saveTimer = null
+  function saveImmediate() {
+    if (timer) {
+      clearTimeout(timer)
+      timer = null
     }
     saveWindowState(getCurrentState(win))
   }
 
-  win.on('resize', debouncedSave)
-  win.on('move', debouncedSave)
+  win.on('move', doSave)
+  win.on('resize', doSave)
   win.on('maximize', saveImmediate)
   win.on('unmaximize', saveImmediate)
   win.on('close', saveImmediate)

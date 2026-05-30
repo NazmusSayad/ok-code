@@ -3,19 +3,20 @@ import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 import { initOpencode } from './opencode'
-import {
-  loadWindowState,
-  registerWindowStateHandlers,
-  validateWindowState,
-} from './window-state'
+import { loadWindowState, registerWindowStateHandlers } from './window-state'
 
 function createWindow(): void {
-  const savedState = validateWindowState(loadWindowState())
+  const savedState = loadWindowState()
 
   const mainWindow = new BrowserWindow({
-    ...savedState,
+    x: savedState?.x,
+    y: savedState?.y,
+    width: savedState?.width,
+    height: savedState?.height,
+
     show: false,
     autoHideMenuBar: true,
+
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
