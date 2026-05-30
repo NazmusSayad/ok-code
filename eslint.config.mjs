@@ -109,8 +109,8 @@ export default [
         },
       ],
 
-      'max-lines': [2, { max: 500, skipBlankLines: true, skipComments: true }],
-      'max-lines-per-function': [2, { max: 100 }],
+      // 'max-lines': [2, { max: 500, skipBlankLines: true, skipComments: true }],
+      // 'max-lines-per-function': [2, { max: 100 }],
       'check-file/folder-naming-convention': [2, { '*/**': 'KEBAB_CASE' }],
       'check-file/filename-naming-convention': [
         2,

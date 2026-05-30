@@ -15,6 +15,7 @@ const initialState = {
     data: [] as Session[],
     error: null as string | null,
     isLoading: false as boolean,
+    currentSessionId: null as string | null,
   },
 
   command: {

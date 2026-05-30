@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useOpencodeStore } from './store'
 
 export function useCurrentProjectOptional() {
@@ -18,4 +19,16 @@ export function useCurrentProject() {
   }
 
   return currentProject
+}
+
+export function useProjectSessions() {
+  const currentProjectId = useOpencodeStore(
+    (state) => state.projects.currentProjectId
+  )
+  const sessionsData = useOpencodeStore((state) => state.session.data)
+
+  return useMemo(() => {
+    if (!currentProjectId) return []
+    return sessionsData.filter((s) => s.projectID === currentProjectId)
+  }, [currentProjectId, sessionsData])
 }

@@ -5,6 +5,8 @@ import { contextBridge, ipcRenderer } from 'electron'
 const api = {
   opencode: {
     getProjects: () => ipcRenderer.invoke('opencode:getProjects'),
+    getSessions: () => ipcRenderer.invoke('opencode:getSessions'),
+    getCommands: () => ipcRenderer.invoke('opencode:getCommands'),
   },
 }
 
