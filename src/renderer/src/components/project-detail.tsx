@@ -1,5 +1,4 @@
 import { Folder, GitBranch, MessageSquare } from 'lucide-react'
-import { selectSession, useOpencodeStore } from '../store/opencode-client'
 import {
   useCurrentProject,
   useCurrentProjectSessions,
@@ -8,9 +7,6 @@ import {
 export function ProjectDetail() {
   const selectedProject = useCurrentProject()
   const projectSessions = useCurrentProjectSessions()
-  const currentSessionId = useOpencodeStore(
-    (state) => state.session.currentSessionId
-  )
 
   return (
     <main className="flex h-full flex-col overflow-auto">
@@ -83,13 +79,7 @@ export function ProjectDetail() {
             ) : (
               <div className="divide-y rounded-lg border">
                 {projectSessions.map((session) => (
-                  <button
-                    key={session.id}
-                    onClick={() => selectSession(session.id)}
-                    className={`w-full text-left px-4 py-3 text-sm transition hover:bg-muted/50 ${
-                      currentSessionId === session.id ? 'bg-muted' : ''
-                    }`}
-                  >
+                  <div key={session.id} className="px-4 py-3 text-sm">
                     <div className="flex items-center justify-between">
                       <span className="font-medium">{session.title}</span>
                       {session.share && (
@@ -110,7 +100,7 @@ export function ProjectDetail() {
                         {new Date(session.time.updated * 1000).toLocaleString()}
                       </span>
                     </div>
-                  </button>
+                  </div>
                 ))}
               </div>
             )}

@@ -70,12 +70,5 @@ export async function initialize(): Promise<void> {
 export function selectProject(id: string | null): void {
   useOpencodeStore.setState((draft) => {
     draft.projects.currentProjectId = id
-    draft.session.currentSessionId = null
-  })
-}
-
-export function selectSession(id: string | null): void {
-  useOpencodeStore.setState((draft) => {
-    draft.session.currentSessionId = id
   })
 }
