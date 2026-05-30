@@ -2276,8 +2276,36 @@ export function MessageItem({ msg }: MessageItemProps) {
   return null
 }
 
+export { partDefaultOpen } from '../utils/message-parts'
+
+export type SummaryDiff = {
+  file: string
+  additions?: number
+  deletions?: number
+  patch?: string
+}
+
+function isSummaryDiff(value: unknown): value is SummaryDiff {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'file' in value &&
+    typeof (value as Record<string, unknown>).file === 'string'
+  )
+}
+
 export type TimelineRow =
-  | { _tag: 'UserMessage'; userMessageID: string; previousUserMessage: boolean }
+  | {
+      _tag: 'UserMessage'
+      userMessageID: string
+      previousUserMessage: boolean
+      anchor: boolean
+    }
+  | {
+      _tag: 'CommentStrip'
+      userMessageID: string
+      previousUserMessage: boolean
+    }
   | {
       _tag: 'TurnDivider'
       userMessageID: string
@@ -2291,6 +2319,8 @@ export type TimelineRow =
       messageID: string
     }
   | { _tag: 'Thinking'; userMessageID: string; reasoningHeading?: string }
+  | { _tag: 'Retry'; userMessageID: string }
+  | { _tag: 'DiffSummary'; userMessageID: string; diffs: SummaryDiff[] }
   | { _tag: 'Error'; userMessageID: string; text: string }
   | { _tag: 'BottomSpacer' }
 
@@ -2298,12 +2328,18 @@ export function timelineRowKey(row: TimelineRow): string {
   switch (row._tag) {
     case 'UserMessage':
       return `user-message:${row.userMessageID}`
+    case 'CommentStrip':
+      return `comment-strip:${row.userMessageID}`
     case 'TurnDivider':
       return `turn-divider:${row.userMessageID}:${row.label}`
     case 'AssistantPart':
       return `assistant-part:${row.userMessageID}:${row.group.key}`
     case 'Thinking':
       return `thinking:${row.userMessageID}`
+    case 'Retry':
+      return `retry:${row.userMessageID}`
+    case 'DiffSummary':
+      return `diff-summary:${row.userMessageID}`
     case 'Error':
       return `error:${row.userMessageID}`
     case 'BottomSpacer':
@@ -2363,11 +2399,29 @@ export function constructTimelineRows(
     )
 
     const isActive = isActiveUserMsg(userMessageID)
+    const status = isActive
+      ? isProcessing
+        ? 'busy'
+        : assistants.some((m) => m.error?.name === 'MessageAbortedError')
+          ? 'retry'
+          : 'idle'
+      : 'idle'
+
+    // CommentStrip: comments from user message parts (not supported yet in ok-code, always empty)
+    const comments: unknown[] = []
+    if (comments.length > 0) {
+      rows.push({
+        _tag: 'CommentStrip',
+        userMessageID,
+        previousUserMessage: comments.length > 0 && previousUserMessage,
+      })
+    }
 
     rows.push({
       _tag: 'UserMessage',
       userMessageID,
-      previousUserMessage,
+      previousUserMessage: comments.length === 0 && previousUserMessage,
+      anchor: comments.length === 0,
     })
 
     if (hasCompaction) {
@@ -2430,7 +2484,7 @@ export function constructTimelineRows(
 
     if (
       isActive &&
-      isProcessing &&
+      status === 'busy' &&
       !errorAssistant &&
       assistantPartRefs.length === 0
     ) {
@@ -2447,6 +2501,32 @@ export function constructTimelineRows(
         _tag: 'Thinking',
         userMessageID,
         reasoningHeading: heading,
+      })
+    }
+
+    if (status === 'retry') {
+      rows.push({
+        _tag: 'Retry',
+        userMessageID,
+      })
+    }
+
+    // DiffSummary: show diffs from user message summary
+    const userMsgData = userMsg.info as UserMessage
+    const diffs = ((userMsgData.summary?.diffs ?? []) as unknown[])
+      .reduceRight<SummaryDiff[]>((result, diff) => {
+        if (!isSummaryDiff(diff)) return result
+        if (result.some((item) => item.file === diff.file)) return result
+        result.push(diff)
+        return result
+      }, [])
+      .reverse()
+
+    if (diffs.length > 0 && (status === 'idle' || !isActive)) {
+      rows.push({
+        _tag: 'DiffSummary',
+        userMessageID,
+        diffs,
       })
     }
 

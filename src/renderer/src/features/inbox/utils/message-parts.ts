@@ -188,3 +188,15 @@ export const HIDDEN_TOOLS = new Set(['todowrite'])
 export function isContextGroupTool(part: Part): part is ToolPart {
   return part.type === 'tool' && CONTEXT_GROUP_TOOLS.has(part.tool)
 }
+
+export function partDefaultOpen(part: Part): boolean | undefined {
+  if (part.type !== 'tool') return undefined
+  if (part.tool === 'bash') return false
+  if (
+    part.tool === 'edit' ||
+    part.tool === 'write' ||
+    part.tool === 'apply_patch'
+  )
+    return true
+  return undefined
+}
