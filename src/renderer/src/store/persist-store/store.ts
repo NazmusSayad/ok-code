@@ -11,7 +11,7 @@ const initialState = {
         {
           providerId: string
           modelId: string
-          variant: string
+          variant?: string
         }
       >
     }
