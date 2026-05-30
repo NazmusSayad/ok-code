@@ -1,0 +1,8 @@
+allowBuilds:
+  electron: true
+  electron-vite: true
+  electron-winstaller: true
+  esbuild: true
+minimumReleaseAgeExclude:
+  - date-fns@4.4.0
+  - lint-staged@17.0.6
