@@ -1,14 +1,20 @@
+import type { Message, Part } from '@opencode-ai/sdk/v2'
 import { Loader2 } from 'lucide-react'
 import { MessageItem } from './message-item'
 
 interface MessagesListProps {
-  messages: any[]
+  messages: { info: Message; parts: Part[] }[]
   isLoading: boolean
-  loadError: any
+  loadError: Error | null
   isProcessing: boolean
 }
 
-export function MessagesList({ messages, isLoading, loadError, isProcessing }: MessagesListProps) {
+export function MessagesList({
+  messages,
+  isLoading,
+  loadError,
+  isProcessing,
+}: MessagesListProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center gap-2 py-8 text-sm text-muted-foreground">

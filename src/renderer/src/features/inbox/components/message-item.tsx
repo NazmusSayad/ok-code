@@ -1,12 +1,7 @@
+import type { Message, Part } from '@opencode-ai/sdk/v2'
+
 interface MessageItemProps {
-  msg: {
-    info: {
-      id: string
-      role: string
-      time: { created: number }
-    }
-    parts: Array<{ type: string; text?: string }>
-  }
+  msg: { info: Message; parts: Part[] }
 }
 
 export function MessageItem({ msg }: MessageItemProps) {
