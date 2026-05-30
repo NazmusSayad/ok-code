@@ -33,8 +33,9 @@ export class OpenCodePublicAPI {
   }
 
   public async getModels() {
-    const { data } = await this.client.v2.model.list()
-    return data ?? []
+    const { data } = await this.client.provider.list()
+    if (!data?.all) return []
+    return data.all.flatMap((provider) => Object.values(provider.models || {}))
   }
 
   public async sendPrompt(

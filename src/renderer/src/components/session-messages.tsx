@@ -43,13 +43,17 @@ export function SessionMessages() {
   // This is NOT stored in persist-store (store shape is source of truth, no normalization).
   const [activeModelKey, setActiveModelKey] = useState<string | null>(null)
 
+  // Stable string key for effect dependency (avoids infinite loop from unstable object references in Zustand selector)
+  const modelsMap = selection.models || {}
+  const modelKeysString = Object.keys(modelsMap).sort().join(',')
+
   useEffect(() => {
-    const modelsMap = selection.models || {}
+    if (activeModelKey) return
     const keys = Object.keys(modelsMap)
-    if (!activeModelKey && keys.length > 0) {
+    if (keys.length > 0) {
       setActiveModelKey(keys[0])
     }
-  }, [selection.models, activeModelKey])
+  }, [modelKeysString])  // only stable string, never the object itself
 
   const [input, setInput] = useState('')
   const [sendError, setSendError] = useState<string | null>(null)
@@ -308,8 +312,8 @@ export function SessionMessages() {
                ? models.find((m) => `${m.providerID}:${m.id}` === currentKey)
                : undefined
 
-             const variantOptions =
-               currentModelData?.variants?.map((v) => v.id) ?? []
+              const rawVariants = (currentModelData as { variants?: Array<{ id: string }> })?.variants
+              const variantOptions = Array.isArray(rawVariants) ? rawVariants.map((v) => v.id) : []
              const currentVariantValue = currentEntry?.variant ?? ''
 
              return (
