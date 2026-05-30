@@ -1,4 +1,4 @@
-import { OpenCodePublicAPI } from './opencode-public-api'
+import { OpenCodePublicAPI } from '../core/opencode-public-api'
 
 export async function initOpencode(ipcMain: Electron.IpcMain) {
   const { createOpencode } = await import('@opencode-ai/sdk/v2')

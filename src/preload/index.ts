@@ -1,7 +1,7 @@
 import { electronAPI } from '@electron-toolkit/preload'
 import type { Prettify } from 'daily-code'
 import { contextBridge, ipcRenderer } from 'electron'
-import { OpenCodePublicAPI } from '../main/opencode-public-api'
+import { OpenCodePublicAPI } from '../core/opencode-public-api'
 
 const generalApi = {}
 
