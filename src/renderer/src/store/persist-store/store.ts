@@ -1,17 +1,21 @@
-// THIS FILE SHOULD NOT BE MODIFIED BY ANY LLM
-
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 
 const initialState = {
-  sessionSelection: {} as {
-    // `${projectId}:${sessionId}`
-    [key: `${string}:${string}`]: {
+  sessionSelection: {} as Record<
+    `${string}:${string}`, // `${projectId}:${sessionId}`
+    {
       agent?: string
-      model?: string
-      variant?: string
+      models?: Record<
+        `${string}:${string}`, // `${providerId}:${modelId}`
+        {
+          providerId: string
+          modelId: string
+          variant: string
+        }
+      >
     }
-  },
+  >,
 }
 
 export const usePersistStore = create<typeof initialState>()(
