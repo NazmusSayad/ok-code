@@ -3,11 +3,17 @@ import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 import { initOpencode } from './opencode'
+import {
+  loadWindowState,
+  registerWindowStateHandlers,
+  validateWindowState,
+} from './window-state'
 
 function createWindow(): void {
+  const savedState = validateWindowState(loadWindowState())
+
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    ...savedState,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -16,6 +22,12 @@ function createWindow(): void {
       sandbox: false,
     },
   })
+
+  if (savedState?.isMaximized) {
+    mainWindow.maximize()
+  }
+
+  registerWindowStateHandlers(mainWindow)
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()

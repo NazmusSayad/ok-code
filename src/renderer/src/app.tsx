@@ -1,7 +1,7 @@
 import { Outlet, Route, Routes } from 'react-router-dom'
 import { AppSidebar } from './components/app-sidebar'
-import { ProjectDetail } from './components/project-detail'
-import { SessionMessages } from './components/session-messages'
+import { SessionInbox } from './features/chat/session-inbox'
+import { ProjectDetailsPage } from './features/projects/project-details-page'
 
 export function App() {
   return (
@@ -23,12 +23,10 @@ export function App() {
             </main>
           }
         />
-        <Route path="project/:projectId" element={<ProjectDetail />} />
 
-        <Route
-          path="project/:projectId/session/:sessionId"
-          element={<SessionMessages />}
-        />
+        <Route path="project/:projectId" element={<ProjectDetailsPage />} />
+
+        <Route path="inbox/:projectId/:sessionId" element={<SessionInbox />} />
       </Route>
     </Routes>
   )
