@@ -24,11 +24,16 @@ export function useCurrentProjectSessions() {
   )
 
   const sessionsData = useOpencodeStore((state) => state.session.data)
-  console.log(sessionsData)
 
-  return useMemo(() => {
+  const currentProjectSessions = useMemo(() => {
     if (!currentProjectId) return []
-
-    return sessionsData.filter((s) => s.projectID === currentProjectId)
+    return sessionsData.filter(
+      (s) =>
+        s.id === currentProjectId ||
+        s.projectID === currentProjectId ||
+        s.parentID === currentProjectId
+    )
   }, [currentProjectId, sessionsData])
+
+  return currentProjectSessions
 }
