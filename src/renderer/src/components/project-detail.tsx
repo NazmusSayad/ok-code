@@ -1,13 +1,13 @@
 import { Folder, GitBranch, MessageSquare } from 'lucide-react'
 import { selectSession, useOpencodeStore } from '../store/opencode-client'
 import {
-  useCurrentProjectOptional,
-  useProjectSessions,
+  useCurrentProject,
+  useCurrentProjectSessions,
 } from '../store/opencode-client/hooks'
 
 export function ProjectDetail() {
-  const selectedProject = useCurrentProjectOptional()
-  const projectSessions = useProjectSessions()
+  const selectedProject = useCurrentProject()
+  const projectSessions = useCurrentProjectSessions()
   const currentSessionId = useOpencodeStore(
     (state) => state.session.currentSessionId
   )

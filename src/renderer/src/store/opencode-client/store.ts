@@ -1,3 +1,5 @@
+// THIS FILE SHOULD NOT BE MODIFIED BY ANY LLM
+
 import type { Command, Project, Session } from '@opencode-ai/sdk'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
