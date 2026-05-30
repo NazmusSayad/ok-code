@@ -77,3 +77,57 @@ export function registerWindowStateHandlers(win: BrowserWindow) {
   win.on('unmaximize', saveImmediate)
   win.on('close', saveImmediate)
 }
+
+export function initWindowState(win: BrowserWindow): void {
+  const state = loadWindowState()
+  const displays = screen.getAllDisplays()
+  const hasMultipleDisplays = displays.length > 1
+
+  let x: number, y: number, width: number, height: number
+
+  if (state) {
+    const target =
+      state.monitor >= 0 && state.monitor < displays.length
+        ? displays[state.monitor]
+        : screen.getPrimaryDisplay()
+
+    const wa = target.workArea
+
+    x =
+      typeof state.x === 'number'
+        ? state.x
+        : Math.round(wa.x + (wa.width - state.width) / 2)
+    y =
+      typeof state.y === 'number'
+        ? state.y
+        : Math.round(wa.y + (wa.height - state.height) / 2)
+    width = state.width
+    height = state.height
+  } else {
+    const wa = screen.getPrimaryDisplay().workArea
+    width = 900
+    height = 670
+    x = Math.round(wa.x + (wa.width - width) / 2)
+    y = Math.round(wa.y + (wa.height - height) / 2)
+  }
+
+  win.setBounds({ x, y, width, height })
+
+  if (state?.isMaximized) {
+    win.maximize()
+  }
+
+  // VS Code-style re-apply on multi-monitor to ensure correct size on secondary/DPI-different monitors
+  if (
+    hasMultipleDisplays &&
+    (process.platform === 'darwin' || process.platform === 'win32')
+  ) {
+    setImmediate(() => {
+      if (!win.isDestroyed()) {
+        win.setBounds({ x, y, width, height })
+      }
+    })
+  }
+
+  registerWindowStateHandlers(win)
+}
