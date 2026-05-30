@@ -16,4 +16,33 @@ export class OpenCodePublicAPI {
     const { data } = await this.client.project.list()
     return data ?? []
   }
+
+  public async getSessions() {
+    const { data } = await this.client.session.list()
+    return data ?? []
+  }
+
+  public async getSessionMessages(sessionID: string) {
+    const { data } = await this.client.session.messages({ sessionID })
+    return data ?? []
+  }
+
+  public async getAgents() {
+    const { data } = await this.client.app.agents()
+    return data ?? []
+  }
+
+  public async sendPrompt(sessionID: string, text: string) {
+    const { data } = await this.client.session.prompt({
+      parts: [{ type: 'text', text }],
+      sessionID,
+    })
+
+    return data
+  }
+
+  public async abortPrompt(sessionId: string) {
+    const { data } = await this.client.session.abort({ sessionID: sessionId })
+    return data
+  }
 }

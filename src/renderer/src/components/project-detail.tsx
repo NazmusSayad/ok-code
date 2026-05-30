@@ -32,10 +32,6 @@ export function ProjectDetail() {
             <span>{selectedProject.worktree}</span>
           </div>
           <div className="flex gap-2">
-            <span className="w-24 text-muted-foreground">VCS Dir</span>
-            <span>{selectedProject.vcsDir ?? '—'}</span>
-          </div>
-          <div className="flex gap-2">
             <span className="w-24 text-muted-foreground">VCS</span>
             <span className="inline-flex items-center gap-1">
               {selectedProject.vcs ? (

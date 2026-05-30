@@ -26,27 +26,27 @@ export function useSessionsQuery() {
   })
 }
 
-export function useProjectSessionsQuery(projectId: string | null) {
+export function useProjectSessionsQuery(projectId: string) {
   const { data: sessions } = useSessionsQuery()
 
   const projectSessions = useMemo(() => {
-    if (!projectId || !sessions) return []
+    if (!sessions) return []
+
     return sessions.filter(
       (s) =>
         s.id === projectId ||
-        s.projectID === projectId ||
-        s.parentID === projectId
+        s.parentID === projectId ||
+        s.projectID === projectId
     )
   }, [projectId, sessions])
 
   return projectSessions
 }
 
-export function useSessionMessagesQuery(sessionId: string | null) {
+export function useSessionMessagesQuery(sessionId: string) {
   return useQuery({
     queryKey: ['messages', sessionId],
-    queryFn: () =>
-      sessionId ? window.opencode.getSessionMessages(sessionId) : [],
+    queryFn: () => window.opencode.getSessionMessages(sessionId),
     enabled: !!sessionId,
   })
 }
