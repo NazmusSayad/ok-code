@@ -7,6 +7,7 @@
   "homepage": "https://electron-vite.org",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
+    "lab": "tsx --watch ./src/main/lab.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "dev": "electron-vite dev",
