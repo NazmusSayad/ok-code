@@ -15,7 +15,7 @@ export function ProjectDetail() {
   }
 
   return (
-    <main className="flex h-full flex-col overflow-auto">
+    <main className="flex h-full flex-col overflow-hidden">
       <div className="border-b p-6">
         <h1 className="mb-4 flex items-center gap-2 text-xl font-bold">
           <Folder className="size-5 text-muted-foreground" />

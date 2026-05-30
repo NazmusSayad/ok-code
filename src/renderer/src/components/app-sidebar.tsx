@@ -38,7 +38,7 @@ export function AppSidebar() {
   console.log(sessionsByProject)
 
   return (
-    <aside className="flex h-full flex-col border-r bg-muted/40 overflow-auto">
+    <aside className="flex h-full flex-col border-r bg-muted/40 overflow-hidden">
       <div className="flex flex-1 flex-col overflow-hidden">
         <div className="flex items-center justify-between border-b px-3 py-2">
           <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -67,7 +67,7 @@ export function AppSidebar() {
           <div className="p-3 text-xs text-destructive">{error.message}</div>
         )}
 
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto better-scrollbar">
           {(!projectsData || projectsData.length === 0) && !isLoading ? (
             <div className="p-3 text-xs text-muted-foreground">
               No projects found

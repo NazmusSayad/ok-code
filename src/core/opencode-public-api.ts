@@ -32,10 +32,30 @@ export class OpenCodePublicAPI {
     return data ?? []
   }
 
-  public async sendPrompt(sessionID: string, text: string) {
+  public async getModels() {
+    const { data } = await this.client.v2.model.list()
+    return data ?? []
+  }
+
+  public async sendPrompt(
+    sessionID: string,
+    text: string,
+    opts?: { agent?: string; model?: string; variant?: string }
+  ) {
+    const modelObj = opts?.model
+      ? (() => {
+          const raw = opts.model!
+          const [providerID, modelID] = raw.split(':')
+          return providerID && modelID ? { providerID, modelID } : undefined
+        })()
+      : undefined
+
     await this.client.session.promptAsync({
       parts: [{ type: 'text', text }],
       sessionID,
+      agent: opts?.agent,
+      model: modelObj,
+      variant: opts?.variant,
     })
   }
 

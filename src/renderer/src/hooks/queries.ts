@@ -72,11 +72,23 @@ export function useAgentsQuery() {
   })
 }
 
+export function useModelsQuery() {
+  return useQuery({
+    queryKey: ['models'],
+    queryFn: () => window.opencode.getModels(),
+  })
+}
+
 export function useSendPromptMutation() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ sessionId, text }: { sessionId: string; text: string }) =>
-      window.opencode.sendPrompt(sessionId, text),
+    mutationFn: (vars: {
+      sessionId: string
+      text: string
+      agent?: string
+      model?: string
+      variant?: string
+    }) => window.opencode.sendPrompt(vars.sessionId, vars.text, vars),
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({
         queryKey: ['messages', variables.sessionId],
