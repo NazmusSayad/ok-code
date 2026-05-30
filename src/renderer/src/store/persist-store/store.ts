@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { createJSONStorage, persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 
 const initialState = {
@@ -19,5 +20,13 @@ const initialState = {
 }
 
 export const usePersistStore = create<typeof initialState>()(
-  immer(() => initialState)
+  persist(
+    immer(() => initialState),
+    {
+      version: 0,
+      name: 'persist-store',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({ sessionSelection: state.sessionSelection }),
+    }
+  )
 )
