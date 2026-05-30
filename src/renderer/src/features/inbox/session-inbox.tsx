@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
 import { MessageSquare } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
   useAbortPromptMutation,
@@ -9,12 +9,12 @@ import {
   useSessionMessagesQuery,
 } from '../../hooks/queries'
 import { useSessionSelection } from '../../store/persist-store/actions'
+import { MessagesList } from './components/messages-list'
 import { PromptControls } from './components/prompt-controls'
 import { PromptInput } from './components/prompt-input'
-import { MessagesList } from './components/messages-list'
 
 export function SessionInbox() {
-  const { projectId, sessionId } = useParams<{ projectId: string; sessionId: string }>()
+  const { projectId, sessionId } = useParams()
 
   const project = useProjectQuery(projectId!)
   const sessions = useProjectSessionsQuery(projectId!)
@@ -77,7 +77,9 @@ export function SessionInbox() {
       chosenModelId = activeEntry.modelId
       chosenVariant = activeEntry.variant
     } else {
-      const firstKey = Object.keys(modelsMapLocal)[0] as `${string}:${string}` | undefined
+      const firstKey = Object.keys(modelsMapLocal)[0] as
+        | `${string}:${string}`
+        | undefined
       if (firstKey) {
         const entry = modelsMapLocal[firstKey]
         chosenProviderId = entry.providerId
