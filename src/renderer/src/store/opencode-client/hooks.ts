@@ -37,3 +37,7 @@ export function useCurrentProjectSessions() {
 
   return currentProjectSessions
 }
+
+export function useSelectedSessionMessages() {
+  return useOpencodeStore((state) => state.messages)
+}

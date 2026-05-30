@@ -63,6 +63,30 @@ export async function fetchCommands(): Promise<void> {
   }
 }
 
+export async function fetchSessionMessages(sessionId: string): Promise<void> {
+  useOpencodeStore.setState((draft) => {
+    draft.messages.isLoading = true
+    draft.messages.error = null
+    draft.messages.currentSessionId = null
+    draft.messages.data = []
+  })
+
+  try {
+    const messages = await window.api.opencode.getSessionMessages(sessionId)
+    useOpencodeStore.setState((draft) => {
+      draft.messages.isLoading = false
+      draft.messages.currentSessionId = sessionId
+      draft.messages.data = messages
+    })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    useOpencodeStore.setState((draft) => {
+      draft.messages.isLoading = false
+      draft.messages.error = message
+    })
+  }
+}
+
 export async function initialize(): Promise<void> {
   await Promise.all([fetchProjects(), fetchSessions(), fetchCommands()])
 }

@@ -14,4 +14,13 @@ export async function initOpencode(ipcMain: Electron.IpcMain) {
   ipcMain.handle('opencode:getCommands', async () => {
     return client.command.list().then((result) => result.data ?? [])
   })
+
+  ipcMain.handle(
+    'opencode:getSessionMessages',
+    async (_, sessionId: string) => {
+      return client.session
+        .messages({ path: { id: sessionId } })
+        .then((result) => result.data ?? [])
+    }
+  )
 }

@@ -34,6 +34,13 @@ const initialState = {
     isLoading: false as boolean,
     error: null as string | null,
   },
+
+  messages: {
+    data: [] as { info: import('@opencode-ai/sdk').Message, parts: import('@opencode-ai/sdk').Part[] }[],
+    currentSessionId: null as string | null,
+    isLoading: false as boolean,
+    error: null as string | null,
+  },
 }
 
 export const useOpencodeStore = create<typeof initialState>()(
