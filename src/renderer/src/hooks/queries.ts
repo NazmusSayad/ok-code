@@ -48,6 +48,20 @@ export function useSessionMessagesQuery(sessionId: string) {
     queryKey: ['messages', sessionId],
     queryFn: () => window.opencode.getSessionMessages(sessionId),
     enabled: !!sessionId,
+    refetchInterval: (query) => {
+      const data = query.state.data as unknown
+      if (!Array.isArray(data) || data.length === 0) return false
+      const last = data[data.length - 1] as {
+        info?: { role?: string; time?: { completed?: number }; error?: unknown }
+      }
+      if (!last?.info) return false
+      if (last.info.role === 'user') return 400
+      if (last.info.role === 'assistant') {
+        if (last.info.time?.completed || last.info.error) return false
+        return 250
+      }
+      return false
+    },
   })
 }
 
@@ -72,7 +86,11 @@ export function useSendPromptMutation() {
 }
 
 export function useAbortPromptMutation() {
+  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (sessionId: string) => window.opencode.abortPrompt(sessionId),
+    onSuccess: (_data, sessionId) => {
+      void queryClient.invalidateQueries({ queryKey: ['messages', sessionId] })
+    },
   })
 }

@@ -27,26 +27,29 @@ export function SessionMessages() {
   const abortPromptMutation = useAbortPromptMutation()
 
   const [input, setInput] = useState('')
-  const [isProcessing, setIsProcessing] = useState(false)
   const [sendError, setSendError] = useState<string | null>(null)
   const listRef = useRef<HTMLDivElement>(null)
+
+  const lastMessage = messages?.[messages.length - 1]
+  const isStreaming =
+    !!lastMessage &&
+    (lastMessage.info.role === 'user' ||
+      (lastMessage.info.role === 'assistant' &&
+        !lastMessage.info.time?.completed &&
+        !lastMessage.info.error))
+  const isProcessing = sendPromptMutation.isPending || isStreaming
 
   function handleSend() {
     const text = input.trim()
     if (!text || isProcessing || !sessionId) return
     setInput('')
-    setIsProcessing(true)
     setSendError(null)
 
     sendPromptMutation.mutate(
       { sessionId, text },
       {
-        onSuccess: () => {
-          setIsProcessing(false)
-        },
         onError: () => {
           setSendError('Failed to send message')
-          setIsProcessing(false)
         },
       }
     )
@@ -56,7 +59,6 @@ export function SessionMessages() {
     if (!sessionId) return
     try {
       await abortPromptMutation.mutateAsync(sessionId)
-      setIsProcessing(false)
     } catch {
       setSendError('Failed to abort')
     }

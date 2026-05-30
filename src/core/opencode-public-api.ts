@@ -33,12 +33,10 @@ export class OpenCodePublicAPI {
   }
 
   public async sendPrompt(sessionID: string, text: string) {
-    const { data } = await this.client.session.prompt({
+    await this.client.session.promptAsync({
       parts: [{ type: 'text', text }],
       sessionID,
     })
-
-    return data
   }
 
   public async abortPrompt(sessionId: string) {
