@@ -72,7 +72,10 @@ export function setSessionModelVariant(
   })
 }
 
+const EMPTY_SELECTION = {} as const
+
 export function useSessionSelection(projectId: string, sessionId: string) {
   const key = getKey(projectId, sessionId)
-  return usePersistStore((s) => s.sessionSelection[key] ?? {})
+  const data = usePersistStore((s) => s.sessionSelection[key])
+  return data ?? EMPTY_SELECTION
 }
