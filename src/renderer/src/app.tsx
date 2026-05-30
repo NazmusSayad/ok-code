@@ -1,18 +1,17 @@
+import { useEffect } from 'react'
 import { AppSidebar } from './components/app-sidebar'
-import { Button } from './components/ui/button'
+import { ProjectDetail } from './components/project-detail'
+import { initialize } from './store/opencode-client'
 
 export function App() {
-  function ipcHandle(): void {
-    return window.electron.ipcRenderer.send('ping')
-  }
+  useEffect(() => {
+    void initialize()
+  }, [])
 
   return (
-    <div className="grid size-full grid-cols-[200px_1fr]">
+    <div className="grid size-full grid-cols-[240px_1fr]">
       <AppSidebar />
-
-      <div>
-        <Button onClick={ipcHandle}>Send IPC</Button>
-      </div>
+      <ProjectDetail />
     </div>
   )
 }
