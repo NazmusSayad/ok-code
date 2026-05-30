@@ -35,6 +35,9 @@ importers:
       cmdk:
         specifier: ^1.1.1
         version: 1.1.1(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      daily-code:
+        specifier: ^1.1.16
+        version: 1.1.16
       date-fns:
         specifier: ^4.4.0
         version: 4.4.0
@@ -2558,6 +2561,9 @@ packages:
   d3-timer@3.0.1:
     resolution: {integrity: sha512-ndfJ/JxxMd3nw31uyKoY2naivF+r29V+Lc0svZxe1JvvIRmi8hUsrMvdOwgS1o6uBHmiz91geQ0ylPP0aj1VUA==}
     engines: {node: '>=12'}
+
+  daily-code@1.1.16:
+    resolution: {integrity: sha512-n+GUu5/Jy6TQ69Q1+Z8VRE2fxzF8Tmf8G9YeJZiCtL7Q0/9Z2IG7BaAMXdWLXuBJfBMnBSTqq7U9/AMuzZKuvg==}
 
   data-view-buffer@1.0.2:
     resolution: {integrity: sha512-EmKO5V3OLXh1rtK2wgXRansaK1/mtVdTUEiEI0W8RkvgT05kfxaH29PliLnpLP73yYO6142Q72QNa8Wx/A5CqQ==}
@@ -6892,6 +6898,8 @@ snapshots:
       d3-array: 3.2.4
 
   d3-timer@3.0.1: {}
+
+  daily-code@1.1.16: {}
 
   data-view-buffer@1.0.2:
     dependencies:

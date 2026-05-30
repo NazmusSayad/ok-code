@@ -37,14 +37,14 @@ export function AppSidebar() {
 
   function handleProjectClick(id: string) {
     if (activeProjectId === id) {
-      navigate('/')
+      void navigate('/')
     } else {
-      navigate(`/project/${id}`)
+      void navigate(`/project/${id}`)
     }
   }
 
   function handleSessionClick(projectId: string, sessionId: string) {
-    navigate(`/project/${projectId}/session/${sessionId}`)
+    void navigate(`/project/${projectId}/session/${sessionId}`)
   }
 
   return (
@@ -54,21 +54,23 @@ export function AppSidebar() {
           <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Projects
           </span>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-6"
-            onClick={() => {
-              queryClient.invalidateQueries({ queryKey: ['projects'] })
-            }}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Loader className="size-3.5 animate-spin" />
-            ) : (
-              <RefreshCw className="size-3.5" />
-            )}
-          </Button>
+          <div className="flex items-center gap-0.5">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-6"
+              onClick={() => {
+                void queryClient.invalidateQueries({ queryKey: ['projects'] })
+              }}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Loader className="size-3.5 animate-spin" />
+              ) : (
+                <RefreshCw className="size-3.5" />
+              )}
+            </Button>
+          </div>
         </div>
 
         {error && (
@@ -94,7 +96,7 @@ export function AppSidebar() {
                       <Button
                         variant={isActiveProject ? 'secondary' : 'ghost'}
                         className="h-auto w-full justify-start gap-2 px-2 py-1.5 text-xs"
-                        onClick={() => handleProjectClick(project.id)}
+                        onClick={() => void handleProjectClick(project.id)}
                       >
                         <Folder className="size-3.5 shrink-0 text-muted-foreground" />
                         <span className="truncate">{project.worktree}</span>
@@ -123,7 +125,10 @@ export function AppSidebar() {
                                 }
                                 className="h-auto w-full justify-start gap-2 px-2 py-1 text-xs"
                                 onClick={() =>
-                                  handleSessionClick(project.id, session.id)
+                                  void handleSessionClick(
+                                    project.id,
+                                    session.id
+                                  )
                                 }
                               >
                                 <MessageSquare className="size-3 shrink-0 text-muted-foreground" />

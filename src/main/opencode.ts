@@ -1,30 +1,17 @@
+import { OpenCodePublicAPI } from './opencode-public-api'
+
 export async function initOpencode(ipcMain: Electron.IpcMain) {
   const { createOpencode } = await import('@opencode-ai/sdk/v2')
 
-  const { client } = await createOpencode()
+  const opencode = await createOpencode()
 
-  ipcMain.handle('opencode:getProjects', async () => {
-    return client.project.list().then((result) => result.data ?? [])
+  const methods = Object.getOwnPropertyNames(OpenCodePublicAPI.prototype)
+  methods.forEach((method, ...args) => {
+    if (method === 'constructor') return
+
+    ipcMain.handle(`opencode:${method}}`, async (event) => {
+      const instance = new OpenCodePublicAPI(opencode, event)
+      return instance[method](...args)
+    })
   })
-
-  ipcMain.handle('opencode:getSessions', async () => {
-    return client.session.list().then((result) => result.data ?? [])
-  })
-
-  ipcMain.handle('opencode:getCommands', async () => {
-    return client.command.list().then((result) => result.data ?? [])
-  })
-
-  ipcMain.handle(
-    'opencode:getSessionMessages',
-    async (
-      _,
-      sessionID: string,
-      options: { limit?: number; before?: string }
-    ) => {
-      return client.session
-        .messages({ sessionID, ...options })
-        .then((result) => result.data ?? [])
-    }
-  )
 }

@@ -1,10 +1,15 @@
-import { Loader2, MessageSquare } from 'lucide-react'
+import { Loader2, MessageSquare, Send, Square } from 'lucide-react'
+import { useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
+  useAbortPromptMutation,
   useProjectQuery,
   useProjectSessionsQuery,
+  useSendPromptMutation,
   useSessionMessagesQuery,
 } from '../hooks/queries'
+import { Button } from './ui/button'
+import { Input } from './ui/input'
 
 export function SessionMessages() {
   const { projectId, sessionId } = useParams<{
@@ -17,11 +22,57 @@ export function SessionMessages() {
   const {
     data: messages,
     isLoading,
-    error,
+    error: loadError,
   } = useSessionMessagesQuery(sessionId!)
 
+  const sendPromptMutation = useSendPromptMutation()
+  const abortPromptMutation = useAbortPromptMutation()
+
+  const [input, setInput] = useState('')
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [sendError, setSendError] = useState<string | null>(null)
+  const listRef = useRef<HTMLDivElement>(null)
+
+  function handleSend() {
+    const text = input.trim()
+    if (!text || isProcessing || !sessionId) return
+    setInput('')
+    setIsProcessing(true)
+    setSendError(null)
+
+    sendPromptMutation.mutate(
+      { sessionId, text },
+      {
+        onSuccess: () => {
+          setIsProcessing(false)
+        },
+        onError: () => {
+          setSendError('Failed to send message')
+          setIsProcessing(false)
+        },
+      }
+    )
+  }
+
+  async function handleAbort() {
+    if (!sessionId) return
+    try {
+      await abortPromptMutation.mutateAsync(sessionId)
+      setIsProcessing(false)
+    } catch {
+      setSendError('Failed to abort')
+    }
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }
+
   return (
-    <main className="flex h-full flex-col overflow-auto">
+    <main className="flex h-full flex-col">
       <div className="border-b px-6 py-4">
         <h1 className="flex items-center gap-2 text-lg font-bold">
           <MessageSquare className="size-5 text-muted-foreground" />
@@ -34,17 +85,17 @@ export function SessionMessages() {
         )}
       </div>
 
-      <div className="flex-1 overflow-auto p-6">
+      <div ref={listRef} className="flex-1 overflow-auto p-6">
         {isLoading ? (
           <div className="flex items-center justify-center gap-2 py-8 text-sm text-muted-foreground">
             <Loader2 className="size-4 animate-spin" />
             Loading messages...
           </div>
-        ) : error ? (
-          <p className="text-sm text-destructive">{error.message}</p>
+        ) : loadError ? (
+          <p className="text-sm text-destructive">{loadError.message}</p>
         ) : !messages || messages.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            No messages in this session.
+            No messages in this session. Send one below.
           </p>
         ) : (
           <div className="space-y-3">
@@ -100,7 +151,51 @@ export function SessionMessages() {
                 </div>
               </div>
             ))}
+            {isProcessing && (
+              <div className="flex items-center gap-2 rounded-lg border bg-muted/30 p-3 text-sm text-muted-foreground">
+                <Loader2 className="size-4 animate-spin" />
+                Processing...
+              </div>
+            )}
           </div>
+        )}
+      </div>
+
+      {sendError && (
+        <div className="border-t border-destructive/30 bg-destructive/10 px-6 py-2 text-xs text-destructive">
+          {sendError}
+        </div>
+      )}
+
+      <div className="flex items-center gap-2 border-t p-3">
+        <Input
+          placeholder="Type a message..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          disabled={isProcessing}
+          className="flex-1"
+        />
+        {isProcessing ? (
+          <Button
+            variant="destructive"
+            size="icon"
+            onClick={() => void handleAbort()}
+            disabled={abortPromptMutation.isPending}
+            title="Abort"
+          >
+            <Square className="size-4" />
+          </Button>
+        ) : (
+          <Button
+            variant="default"
+            size="icon"
+            onClick={handleSend}
+            disabled={!input.trim()}
+            title="Send"
+          >
+            <Send className="size-4" />
+          </Button>
         )}
       </div>
     </main>

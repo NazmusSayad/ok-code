@@ -1,10 +1,10 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
 export function useProjectsQuery() {
   return useQuery({
     queryKey: ['projects'],
-    queryFn: () => window.api.opencode.getProjects(),
+    queryFn: () => window.opencode.getProjects(),
   })
 }
 
@@ -22,7 +22,7 @@ export function useProjectQuery(projectId: string | null) {
 export function useSessionsQuery() {
   return useQuery({
     queryKey: ['sessions'],
-    queryFn: () => window.api.opencode.getSessions(),
+    queryFn: () => window.opencode.getSessions(),
   })
 }
 
@@ -46,7 +46,33 @@ export function useSessionMessagesQuery(sessionId: string | null) {
   return useQuery({
     queryKey: ['messages', sessionId],
     queryFn: () =>
-      sessionId ? window.api.opencode.getSessionMessages(sessionId) : [],
+      sessionId ? window.opencode.getSessionMessages(sessionId) : [],
     enabled: !!sessionId,
+  })
+}
+
+export function useAgentsQuery() {
+  return useQuery({
+    queryKey: ['agents'],
+    queryFn: () => window.opencode.getAgents(),
+  })
+}
+
+export function useSendPromptMutation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ sessionId, text }: { sessionId: string; text: string }) =>
+      window.opencode.sendPrompt(sessionId, text),
+    onSuccess: (_data, variables) => {
+      void queryClient.invalidateQueries({
+        queryKey: ['messages', variables.sessionId],
+      })
+    },
+  })
+}
+
+export function useAbortPromptMutation() {
+  return useMutation({
+    mutationFn: (sessionId: string) => window.opencode.abortPrompt(sessionId),
   })
 }
