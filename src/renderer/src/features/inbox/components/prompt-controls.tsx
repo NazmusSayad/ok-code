@@ -1,4 +1,3 @@
-import type { Model } from '@opencode-ai/sdk/v2'
 import {
   NativeSelect,
   NativeSelectOption,
@@ -107,9 +106,8 @@ export function PromptControls({
             ? models.find((m) => `${m.providerID}:${m.id}` === currentKey)
             : undefined
 
-          const rawVariants = (currentModelData as Model | undefined)?.variants
-          const variantOptions = Array.isArray(rawVariants)
-            ? rawVariants.map((v: { id: string }) => v.id)
+          const variantOptions = currentModelData?.variants
+            ? Object.keys(currentModelData.variants)
             : []
           const currentVariantValue = currentEntry?.variant ?? ''
 
