@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 /* eslint-disable func-style */
 import * as React from 'react'
 import type { TooltipValueType } from 'recharts'

@@ -13,7 +13,6 @@ import {
 import { Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-// eslint-disable-next-line max-lines-per-function
 function Calendar({
   className,
   classNames,
