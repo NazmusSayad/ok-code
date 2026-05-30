@@ -1,4 +1,4 @@
-# agent-ui-quick
+# ok-code
 
 An Electron application with React and TypeScript
 
