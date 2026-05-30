@@ -1,11 +1,11 @@
-import { useOpencodeStore } from './store'
+import { usePersistStore } from './store'
 
 export function selectSessionAgent(
   projectId: string,
   sessionId: string,
   agent: string
 ) {
-  useOpencodeStore.setState((state) => {
+  usePersistStore.setState((state) => {
     const key = `${projectId}:${sessionId}`
     state.sessionSelection[key] ??= []
     state.sessionSelection[key].agent = agent
@@ -17,7 +17,7 @@ export function selectSessionModel(
   sessionId: string,
   model: string
 ) {
-  useOpencodeStore.setState((state) => {
+  usePersistStore.setState((state) => {
     const key = `${projectId}:${sessionId}`
     state.sessionSelection[key] ??= []
     state.sessionSelection[key].model = model
@@ -29,7 +29,7 @@ export function selectSessionModelVariant(
   sessionId: string,
   variant: string
 ) {
-  useOpencodeStore.setState((state) => {
+  usePersistStore.setState((state) => {
     const key = `${projectId}:${sessionId}`
     state.sessionSelection[key] ??= []
     state.sessionSelection[key].variant = variant

@@ -13,6 +13,6 @@ const initialState = {
   },
 }
 
-export const useOpencodeStore = create<typeof initialState>()(
+export const usePersistStore = create<typeof initialState>()(
   immer(() => initialState)
 )
