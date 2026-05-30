@@ -1,5 +1,5 @@
 import { MessageSquare } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
   useAbortPromptMutation,
@@ -34,7 +34,6 @@ export function SessionInbox() {
   const [activeModelKey, setActiveModelKey] = useState<string | null>(null)
   const [input, setInput] = useState('')
   const [sendError, setSendError] = useState<string | null>(null)
-  const listRef = useRef<HTMLDivElement>(null)
 
   const modelsMap = selection.models || {}
   const modelKeysString = Object.keys(modelsMap).sort().join(',')
@@ -140,10 +139,7 @@ export function SessionInbox() {
           )}
         </div>
 
-        <div
-          ref={listRef}
-          className="better-scrollbar flex-1 overflow-auto px-5 py-4"
-        >
+        <div className="flex-1 overflow-hidden px-5">
           <MessagesList
             messages={messages || []}
             isLoading={!!isLoading}

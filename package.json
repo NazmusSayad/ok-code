@@ -8,7 +8,7 @@
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "lab": "tsx --watch ./src/main/lab.ts",
-    "lint": "eslint .",
+    "lint": "nr typecheck && eslint .",
     "lint:fix": "eslint --fix .",
     "dev": "electron-vite dev",
     "start": "electron-vite preview",
