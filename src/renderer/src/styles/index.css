@@ -23,6 +23,14 @@
   body {
     @apply bg-background text-foreground font-body antialiased;
   }
+
+  #root {
+    height: 100vh;
+  }
+
+  #root {
+    height: 100dvh;
+  }
 }
 
 @layer utilities {
