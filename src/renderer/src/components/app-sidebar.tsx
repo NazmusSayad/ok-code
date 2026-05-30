@@ -122,7 +122,7 @@ export function AppSidebar() {
                                 className="h-auto w-full justify-start gap-2 px-2 py-1 text-xs"
                                 onClick={() =>
                                   void navigate(
-                                    `/project/${project.id}/session/${session.id}`
+                                    `/inbox/${project.id}/${session.id}`
                                   )
                                 }
                               >

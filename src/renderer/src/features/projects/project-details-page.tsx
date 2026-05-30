@@ -1,8 +1,8 @@
 import { Folder, GitBranch } from 'lucide-react'
 import { useParams } from 'react-router-dom'
-import { useProjectQuery } from '../hooks/queries'
+import { useProjectQuery } from '../../hooks/queries'
 
-export function ProjectDetail() {
+export function ProjectDetailsPage() {
   const { projectId } = useParams<{ projectId: string }>()
   const selectedProject = useProjectQuery(projectId!)
 
@@ -15,7 +15,7 @@ export function ProjectDetail() {
   }
 
   return (
-    <main className="flex h-full flex-col overflow-hidden">
+    <main className="flex h-full flex-col overflow-auto">
       <div className="border-b p-6">
         <h1 className="mb-4 flex items-center gap-2 text-xl font-bold">
           <Folder className="size-5 text-muted-foreground" />

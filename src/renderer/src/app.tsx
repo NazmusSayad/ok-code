@@ -1,6 +1,6 @@
 import { Outlet, Route, Routes } from 'react-router-dom'
 import { AppSidebar } from './components/app-sidebar'
-import { SessionInbox } from './features/chat/session-inbox'
+import { SessionInbox } from './features/inbox/session-inbox'
 import { ProjectDetailsPage } from './features/projects/project-details-page'
 
 export function App() {
