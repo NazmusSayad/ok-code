@@ -12,10 +12,8 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 
 export function SessionMessages() {
-  const { projectId, sessionId } = useParams<{
-    projectId: string
-    sessionId: string
-  }>()
+  const { projectId, sessionId } = useParams()
+
   const project = useProjectQuery(projectId!)
   const sessions = useProjectSessionsQuery(projectId!)
   const session = sessions.find((s) => s.id === sessionId)

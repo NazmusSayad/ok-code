@@ -6,13 +6,13 @@ export async function initOpencode(ipcMain: Electron.IpcMain) {
   const opencode = await createOpencode()
 
   const methods = Object.getOwnPropertyNames(OpenCodePublicAPI.prototype)
-  methods.forEach((method, ...args) => {
+  methods.forEach((method) => {
     if (method === 'constructor') return
 
     const channel = `opencode:${method}`
     console.log('Registering IPC handler for method:', channel)
 
-    ipcMain.handle(channel, async (event) => {
+    ipcMain.handle(channel, async (event, ...args) => {
       const instance = new OpenCodePublicAPI(opencode, event)
       return instance[method](...args)
     })

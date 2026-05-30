@@ -35,17 +35,7 @@ export function AppSidebar() {
     return map
   }, [sessionsData])
 
-  function handleProjectClick(id: string) {
-    if (activeProjectId === id) {
-      void navigate('/')
-    } else {
-      void navigate(`/project/${id}`)
-    }
-  }
-
-  function handleSessionClick(projectId: string, sessionId: string) {
-    void navigate(`/project/${projectId}/session/${sessionId}`)
-  }
+  console.log(sessionsByProject)
 
   return (
     <aside className="flex h-full flex-col border-r bg-muted/40">
@@ -96,7 +86,13 @@ export function AppSidebar() {
                       <Button
                         variant={isActiveProject ? 'secondary' : 'ghost'}
                         className="h-auto w-full justify-start gap-2 px-2 py-1.5 text-xs"
-                        onClick={() => void handleProjectClick(project.id)}
+                        onClick={() => {
+                          if (activeProjectId === project.id) {
+                            void navigate('/')
+                          } else {
+                            void navigate(`/project/${project.id}`)
+                          }
+                        }}
                       >
                         <Folder className="size-3.5 shrink-0 text-muted-foreground" />
                         <span className="truncate">{project.worktree}</span>
@@ -125,9 +121,8 @@ export function AppSidebar() {
                                 }
                                 className="h-auto w-full justify-start gap-2 px-2 py-1 text-xs"
                                 onClick={() =>
-                                  void handleSessionClick(
-                                    project.id,
-                                    session.id
+                                  void navigate(
+                                    `/project/${project.id}/session/${session.id}`
                                   )
                                 }
                               >
