@@ -126,51 +126,58 @@ export function SessionInbox() {
   }
 
   return (
-    <main className="flex h-full flex-col">
-      <div className="border-b px-6 py-4">
-        <h1 className="flex items-center gap-2 text-lg font-bold">
-          <MessageSquare className="size-5 text-muted-foreground" />
-          {session?.title || sessionId}
-        </h1>
-        {project && (
-          <p className="mt-1 text-xs text-muted-foreground">
-            {project.worktree}
-          </p>
+    <main className="grid h-full grid-rows-[1fr_auto] overflow-hidden">
+      <div className="grid h-full grid-rows-[auto_1fr_auto] overflow-hidden">
+        <div className="border-b px-6 py-4">
+          <h1 className="flex items-center gap-2 text-lg font-bold">
+            <MessageSquare className="text-muted-foreground size-5" />
+            {session?.title || sessionId}
+          </h1>
+          {project && (
+            <p className="text-muted-foreground mt-1 text-xs">
+              {project.worktree}
+            </p>
+          )}
+        </div>
+
+        <div
+          ref={listRef}
+          className="better-scrollbar flex-1 overflow-auto p-6"
+        >
+          <MessagesList
+            messages={messages || []}
+            isLoading={!!isLoading}
+            loadError={loadError}
+            isProcessing={isProcessing}
+          />
+        </div>
+
+        {sendError && (
+          <div className="border-destructive/30 bg-destructive/10 text-destructive border-t px-6 py-2 text-xs">
+            {sendError}
+          </div>
         )}
       </div>
 
-      <div ref={listRef} className="flex-1 overflow-auto p-6">
-        <MessagesList
-          messages={messages || []}
-          isLoading={!!isLoading}
-          loadError={loadError}
+      <div>
+        <PromptControls
+          projectId={projectId!}
+          sessionId={sessionId!}
+          disabled={isProcessing}
+          activeModelKey={activeModelKey}
+          onActiveModelKeyChange={setActiveModelKey}
+        />
+
+        <PromptInput
+          input={input}
+          setInput={setInput}
           isProcessing={isProcessing}
+          onSend={handleSend}
+          onAbort={() => void handleAbort()}
+          abortPending={abortPromptMutation.isPending}
+          onKeyDown={handleKeyDown}
         />
       </div>
-
-      {sendError && (
-        <div className="border-t border-destructive/30 bg-destructive/10 px-6 py-2 text-xs text-destructive">
-          {sendError}
-        </div>
-      )}
-
-      <PromptControls
-        projectId={projectId!}
-        sessionId={sessionId!}
-        disabled={isProcessing}
-        activeModelKey={activeModelKey}
-        onActiveModelKeyChange={setActiveModelKey}
-      />
-
-      <PromptInput
-        input={input}
-        setInput={setInput}
-        isProcessing={isProcessing}
-        onSend={handleSend}
-        onAbort={() => void handleAbort()}
-        abortPending={abortPromptMutation.isPending}
-        onKeyDown={handleKeyDown}
-      />
     </main>
   )
 }

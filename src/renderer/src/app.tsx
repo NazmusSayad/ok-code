@@ -18,7 +18,7 @@ export function App() {
         <Route
           index
           element={
-            <main className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
+            <main className="text-muted-foreground flex flex-1 items-center justify-center text-sm">
               Select a project from the sidebar
             </main>
           }

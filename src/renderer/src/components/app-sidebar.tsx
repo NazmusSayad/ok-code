@@ -38,10 +38,10 @@ export function AppSidebar() {
   console.log(sessionsByProject)
 
   return (
-    <aside className="flex h-full flex-col border-r bg-muted/40 overflow-hidden">
+    <aside className="bg-muted/40 flex h-full flex-col overflow-hidden border-r">
       <div className="flex flex-1 flex-col overflow-hidden">
         <div className="flex items-center justify-between border-b px-3 py-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
             Projects
           </span>
           <div className="flex items-center gap-0.5">
@@ -64,12 +64,12 @@ export function AppSidebar() {
         </div>
 
         {error && (
-          <div className="p-3 text-xs text-destructive">{error.message}</div>
+          <div className="text-destructive p-3 text-xs">{error.message}</div>
         )}
 
-        <div className="flex-1 overflow-auto better-scrollbar">
+        <div className="better-scrollbar flex-1 overflow-auto">
           {(!projectsData || projectsData.length === 0) && !isLoading ? (
-            <div className="p-3 text-xs text-muted-foreground">
+            <div className="text-muted-foreground p-3 text-xs">
               No projects found
             </div>
           ) : (
@@ -94,18 +94,18 @@ export function AppSidebar() {
                           }
                         }}
                       >
-                        <Folder className="size-3.5 shrink-0 text-muted-foreground" />
+                        <Folder className="text-muted-foreground size-3.5 shrink-0" />
                         <span className="truncate">{project.worktree}</span>
                         {isExpanded && projectSessions.length > 0 && (
-                          <span className="ml-auto text-[10px] text-muted-foreground">
+                          <span className="text-muted-foreground ml-auto text-[10px]">
                             {projectSessions.length}
                           </span>
                         )}
                         {projectSessions.length > 0 &&
                           (isExpanded ? (
-                            <ChevronDown className="size-3 shrink-0 text-muted-foreground" />
+                            <ChevronDown className="text-muted-foreground size-3 shrink-0" />
                           ) : (
-                            <ChevronRight className="size-3 shrink-0 text-muted-foreground" />
+                            <ChevronRight className="text-muted-foreground size-3 shrink-0" />
                           ))}
                       </Button>
 
@@ -126,7 +126,7 @@ export function AppSidebar() {
                                   )
                                 }
                               >
-                                <MessageSquare className="size-3 shrink-0 text-muted-foreground" />
+                                <MessageSquare className="text-muted-foreground size-3 shrink-0" />
                                 <span className="truncate">
                                   {session.title || session.directory}
                                 </span>

@@ -11,7 +11,7 @@ export function MessageItem({ msg }: MessageItemProps) {
         msg.info.role === 'assistant' ? 'bg-muted/30' : 'bg-background'
       }`}
     >
-      <div className="mb-1 flex items-center gap-2 text-xs text-muted-foreground">
+      <div className="text-muted-foreground mb-1 flex items-center gap-2 text-xs">
         <span
           className={`rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase ${
             msg.info.role === 'user'
@@ -34,13 +34,13 @@ export function MessageItem({ msg }: MessageItemProps) {
               )
             case 'reasoning':
               return (
-                <p key={idx} className="italic text-muted-foreground">
+                <p key={idx} className="text-muted-foreground italic">
                   {part.text}
                 </p>
               )
             default:
               return (
-                <p key={idx} className="text-xs text-muted-foreground">
+                <p key={idx} className="text-muted-foreground text-xs">
                   [{part.type}]
                 </p>
               )

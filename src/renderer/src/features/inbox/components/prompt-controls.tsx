@@ -33,10 +33,10 @@ export function PromptControls({
   const modelsMap = selection.models || {}
 
   return (
-    <div className="flex flex-wrap items-center gap-2 border-t bg-muted/30 px-3 py-2">
+    <div className="bg-muted/30 flex flex-wrap items-center gap-2 border-t px-3 py-2">
       {/* Agent */}
       <div className="flex items-center gap-1.5">
-        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+        <span className="text-muted-foreground text-[10px] tracking-wider uppercase">
           Agent
         </span>
         <NativeSelect
@@ -62,7 +62,7 @@ export function PromptControls({
 
       {/* Model */}
       <div className="flex items-center gap-1.5">
-        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+        <span className="text-muted-foreground text-[10px] tracking-wider uppercase">
           Model
         </span>
         <NativeSelect
@@ -94,7 +94,7 @@ export function PromptControls({
 
       {/* Variant */}
       <div className="flex items-center gap-1.5">
-        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+        <span className="text-muted-foreground text-[10px] tracking-wider uppercase">
           Variant
         </span>
         {(() => {

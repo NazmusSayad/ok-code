@@ -17,7 +17,7 @@ export function MessagesList({
 }: MessagesListProps) {
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center gap-2 py-8 text-sm text-muted-foreground">
+      <div className="text-muted-foreground flex items-center justify-center gap-2 py-8 text-sm">
         <Loader2 className="size-4 animate-spin" />
         Loading messages...
       </div>
@@ -25,12 +25,12 @@ export function MessagesList({
   }
 
   if (loadError) {
-    return <p className="text-sm text-destructive">{loadError.message}</p>
+    return <p className="text-destructive text-sm">{loadError.message}</p>
   }
 
   if (!messages || messages.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground">
+      <p className="text-muted-foreground text-sm">
         No messages in this session. Send one below.
       </p>
     )
@@ -42,7 +42,7 @@ export function MessagesList({
         <MessageItem key={msg.info.id} msg={msg} />
       ))}
       {isProcessing && (
-        <div className="flex items-center gap-2 rounded-lg border bg-muted/30 p-3 text-sm text-muted-foreground">
+        <div className="bg-muted/30 text-muted-foreground flex items-center gap-2 rounded-lg border p-3 text-sm">
           <Loader2 className="size-4 animate-spin" />
           Processing...
         </div>
