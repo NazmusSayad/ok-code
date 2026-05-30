@@ -1,4 +1,4 @@
-import type { Project } from '@opencode-ai/sdk'
+import type { Command, Project, Session } from '@opencode-ai/sdk'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 
@@ -9,6 +9,18 @@ const initialState = {
     isLoading: false as boolean,
 
     currentProjectId: null as string | null,
+  },
+
+  session: {
+    data: [] as Session[],
+    error: null as string | null,
+    isLoading: false as boolean,
+  },
+
+  command: {
+    data: [] as Command[],
+    error: null as string | null,
+    isLoading: false as boolean,
   },
 }
 
